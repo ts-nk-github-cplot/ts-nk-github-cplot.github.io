@@ -1,0 +1,3 @@
+```bash
+cd ~/tsft_projects/visual-embed-sdk && npm run build && npx vite build -c vite.local.config.ts --outDir local-dist --base / && rm -rf ~/tsft_projects/ts-nk-github-cplot.github.io/assets && cp local-dist/local/index.html ~/tsft_projects/ts-nk-github-cplot.github.io/index.html && cp -R local-dist/assets ~/tsft_projects/ts-nk-github-cplot.github.io/assets && cp local/index.ts ~/tsft_projects/ts-nk-github-cplot.github.io/assets/index.ts && rm -rf local-dist && git -C ~/tsft_projects/ts-nk-github-cplot.github.io add -A && git -C ~/tsft_projects/ts-nk-github-cplot.github.io commit -m "Update build" && git -C ~/tsft_projects/ts-nk-github-cplot.github.io push
+```
