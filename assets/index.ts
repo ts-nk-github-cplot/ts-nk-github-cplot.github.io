@@ -72,12 +72,14 @@ Object.assign(debugConsole.style, {
     position: 'fixed',
     bottom: '12px',
     right: '12px',
-    width: '380px',
-    background: '#1e1e1e',
-    color: '#ddd',
-    font: '11px/1.4 monospace',
+    width: '560px',
+    maxWidth: 'calc(100vw - 24px)',
+    background: '#ffffff',
+    color: '#1f2328',
+    font: '11px/1.5 ui-monospace, SFMono-Regular, Menlo, monospace',
+    border: '1px solid #d0d7de',
     borderRadius: '6px',
-    boxShadow: '0 2px 12px rgba(0,0,0,0.4)',
+    boxShadow: '0 4px 16px rgba(31, 35, 40, 0.16)',
     zIndex: '9999',
     overflow: 'hidden',
 });
@@ -89,7 +91,8 @@ Object.assign(debugHeader.style, {
     alignItems: 'center',
     gap: '8px',
     padding: '6px 8px',
-    background: '#2d2d2d',
+    background: '#f6f8fa',
+    borderBottom: '1px solid #d0d7de',
     cursor: 'pointer',
     userSelect: 'none',
 });
@@ -98,6 +101,7 @@ debugConsole.appendChild(debugHeader);
 const debugTitle = document.createElement('span');
 debugTitle.textContent = 'Event console';
 debugTitle.style.flex = '1';
+debugTitle.style.fontWeight = 'bold';
 debugHeader.appendChild(debugTitle);
 
 const allEventsLabel = document.createElement('label');
@@ -121,13 +125,35 @@ collapseButton.textContent = '\u2013';
 collapseButton.style.width = '22px';
 debugHeader.appendChild(collapseButton);
 
+const debugBody = document.createElement('div');
+debugConsole.appendChild(debugBody);
+
+const searchBar = document.createElement('div');
+Object.assign(searchBar.style, {
+    padding: '6px 8px',
+    borderBottom: '1px solid #eaeef2',
+});
+debugBody.appendChild(searchBar);
+
+const searchInput = document.createElement('input');
+searchInput.type = 'search';
+searchInput.placeholder = 'Filter by event name or payload\u2026';
+Object.assign(searchInput.style, {
+    width: '100%',
+    boxSizing: 'border-box',
+    padding: '4px 6px',
+    font: 'inherit',
+    border: '1px solid #d0d7de',
+    borderRadius: '4px',
+});
+searchBar.appendChild(searchInput);
+
 const debugLog = document.createElement('div');
 Object.assign(debugLog.style, {
     maxHeight: '40vh',
     overflowY: 'auto',
-    padding: '4px 0',
 });
-debugConsole.appendChild(debugLog);
+debugBody.appendChild(debugLog);
 
 // Header clicks toggle, so the controls inside it must not bubble up.
 [allEventsLabel, clearButton].forEach((el) => {
@@ -140,28 +166,67 @@ clearButton.onclick = (event) => {
 };
 
 const toggleCollapsed = () => {
-    const collapsed = debugLog.style.display === 'none';
-    debugLog.style.display = collapsed ? '' : 'none';
+    const collapsed = debugBody.style.display === 'none';
+    debugBody.style.display = collapsed ? '' : 'none';
     collapseButton.textContent = collapsed ? '\u2013' : '+';
 };
 collapseButton.onclick = toggleCollapsed;
 debugHeader.onclick = toggleCollapsed;
 
+const applyFilter = (entry: HTMLElement) => {
+    const term = searchInput.value.trim().toLowerCase();
+    const matches = !term || (entry.dataset.search ?? '').includes(term);
+    entry.style.display = matches ? '' : 'none';
+};
+searchInput.oninput = () => {
+    Array.from(debugLog.children).forEach((child) => applyFilter(child as HTMLElement));
+};
+
+const eventColor = (name: string) => {
+    if (name.startsWith('HostEvent')) return '#8250df';
+    if (name.startsWith('EmbedEvent.ALL')) return '#6e7781';
+    return '#0550ae';
+};
+
 const logEvent = (name: string, payload: unknown) => {
-    const entry = document.createElement('div');
-    Object.assign(entry.style, {
-        padding: '4px 8px',
-        borderBottom: '1px solid #333',
-        whiteSpace: 'pre-wrap',
-        wordBreak: 'break-word',
-    });
     let body: string;
     try {
         body = JSON.stringify(payload, null, 2) ?? String(payload);
     } catch {
-        body = '<unserializable payload — see devtools>';
+        body = '<unserializable payload \u2014 see devtools>';
     }
-    entry.textContent = `[${new Date().toLocaleTimeString()}] ${name}\n${body}`;
+
+    const entry = document.createElement('div');
+    Object.assign(entry.style, {
+        padding: '5px 8px',
+        borderBottom: '1px solid #eaeef2',
+    });
+    entry.dataset.search = `${name} ${body}`.toLowerCase();
+
+    const timestamp = document.createElement('span');
+    timestamp.textContent = `${new Date().toLocaleTimeString()} `;
+    timestamp.style.color = '#6e7781';
+
+    const label = document.createElement('span');
+    label.textContent = name;
+    label.style.color = eventColor(name);
+    label.style.fontWeight = 'bold';
+
+    const payloadBlock = document.createElement('pre');
+    Object.assign(payloadBlock.style, {
+        margin: '2px 0 0',
+        whiteSpace: 'pre-wrap',
+        wordBreak: 'break-word',
+        color: '#57606a',
+        font: 'inherit',
+    });
+    payloadBlock.textContent = body;
+
+    const titleRow = document.createElement('div');
+    titleRow.append(timestamp, label);
+    entry.append(titleRow, payloadBlock);
+
+    applyFilter(entry);
     debugLog.appendChild(entry);
     debugLog.scrollTop = debugLog.scrollHeight;
 };
@@ -294,17 +359,21 @@ const addTriggerButton = (label: string, onClick: () => void) => {
 };
 
 addTriggerButton('Trigger Edit (normal)', () => {
+    logEvent('HostEvent.Edit', {});
     liveboardEmbed.trigger(HostEvent.Edit);
 });
 
 addTriggerButton('Trigger Edit Liveboard Action', () => {
+    logEvent('HostEvent.EditLiveboard', {});
     liveboardEmbed.trigger(HostEvent.EditLiveboard, {});
 });
 
 addTriggerButton('Trigger Edit Visualization', () => {
     if (!testVizId) {
         console.warn('[debug] set testVizId to a viz GUID on this Liveboard first');
+        logEvent('HostEvent.Edit (skipped)', { reason: 'testVizId is not set' });
         return;
     }
+    logEvent('HostEvent.Edit', { vizId: testVizId });
     liveboardEmbed.trigger(HostEvent.Edit, { vizId: testVizId });
 });
