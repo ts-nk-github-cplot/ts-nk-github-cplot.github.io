@@ -1,4 +1,4 @@
-import{a as j,P as U,U as W,C as $}from"./page-chrome-CzuKvEUn.js";import{i as G,A as Q,a as o,L as q,E as m,b as J,S as K,c as X,t as Y,H as u}from"./track-embed-D1_2k9il.js";const Z=`import { mountPageChrome } from "../../shared/page-chrome";
+import{a as j,P as U,U as W,C as $}from"./page-chrome-B8v66vtc.js";import{i as G,A as Q,a as o,L as q,E as m,b as J,S as K,c as X,t as Y,H as u}from"./track-embed-JXe5Q994.js";const Z=`import { mountPageChrome } from "../../shared/page-chrome";
 import { CLUSTER_URL, PASSWORD, USERNAME } from "../../shared/consts";
 import { trackEmbed } from "../../shared/track-embed";
 import {
