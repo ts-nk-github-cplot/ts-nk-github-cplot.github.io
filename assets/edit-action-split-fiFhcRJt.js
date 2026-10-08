@@ -1,4 +1,4 @@
-import{a as D,C as U}from"./page-chrome-B8v66vtc.js";import{i as $,A as o,L as W,E as p,a as G,S as Q,b as q,t as J,c as K,H as u}from"./track-embed-vr4A4Xog.js";const X=`import { mountPageChrome } from "../../shared/page-chrome";
+import{a as D,C as U}from"./page-chrome-B8v66vtc.js";import{i as $,A as o,L as W,E as p,a as G,S as Q,b as q,t as J,c as K,H as u}from"./track-embed-wVIw-mBO.js";const X=`import { mountPageChrome } from "../../shared/page-chrome";
 import { authConfig } from "../../shared/auth";
 import { CLUSTER_URL } from "../../shared/consts";
 import { trackEmbed } from "../../shared/track-embed";
