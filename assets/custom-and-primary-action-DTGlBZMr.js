@@ -1,4 +1,4 @@
-import{a as P,C as R,P as a,b as l}from"./page-chrome-CroeNQr8.js";import{i as T,a as y,L as I,S as h,E as b,A as O,C as w,b as N,t as S}from"./track-embed-Sr1mTArV.js";import{c as L}from"./code-editor-CM5zQwLc.js";P({title:"Custom and primary actions",subtitle:"Code-based custom actions by target and position"});T({thoughtSpotHost:R,...y});const C="Give me a sample visualization/answer of this data",M=`const liveboardEmbed = new LiveboardEmbed(container, {
+import{a as P,C as R,P as a,b as l}from"./page-chrome-CroeNQr8.js";import{a as T}from"./auth-DsMFhm2s.js";import{i as y,L as I,S as h,E as b,A as O,C as w,a as N,t as S}from"./track-embed-ChIoFrvP.js";import{c as L}from"./code-editor-CM5zQwLc.js";P({title:"Custom and primary actions",subtitle:"Code-based custom actions by target and position"});y({thoughtSpotHost:R,...T});const C="Give me a sample visualization/answer of this data",M=`const liveboardEmbed = new LiveboardEmbed(container, {
   liveboardId: "${a}", // Parameters
   frameParams: { width: "100%", height: "100%" },
   customActions: [
