@@ -1,0 +1,1 @@
+import{E as t}from"./tsembed.es-lWOjXXGr.js";import{d}from"./page-chrome-CroeNQr8.js";function s(r,o){const n=d();r.on(t.ALL,e=>n.add({source:"embed",level:e?.type===t.Error?"error":"debug",eventType:e?.type??"event",title:`${o}: ${e?.type??"event"}`,detail:e?.data===void 0?void 0:JSON.stringify(e.data,null,2)}))}export{s as t};
